@@ -1,10 +1,10 @@
 from sqlalchemy import Column, String, Integer
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Table
+from .Libros import meta
 
-Base = declarative_base()
 
-class Localidad(Base):
-    __tablename__ = 'localidad'
-
-    id = Column(Integer, primary_key=True, index=True)
-    denominacion = Column(String)
+localidad = Table(
+    'localidades', meta,
+    Column('id', Integer, primary_key=True, index=True),
+    Column('denominacion', String(255))
+)

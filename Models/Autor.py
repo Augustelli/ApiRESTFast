@@ -1,12 +1,11 @@
-from sqlalchemy import Column, String, Integer
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, String, Integer, Table
+from .Libros import meta
 
-Base = declarative_base()
 
-class Autor(Base):
-    __tablename__ = 'autor'
-
-    id = Column(Integer, primary_key=True, index=True)
-    nombre = Column(String)
-    apellido = Column(String)
-    biografia = Column(String(length=1500))
+autores = Table(
+    'autores', meta,
+    Column('id', Integer, primary_key=True, index=True),
+    Column('nombre', String(255)),
+    Column('apellido', String(255)),
+    Column('biografia', String(1500))
+)

@@ -1,23 +1,24 @@
-from sqlalchemy import Column, Integer, String, Table, ForeignKey
-from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, String, Table, ForeignKey, MetaData
 
-Base = declarative_base()
+meta = MetaData()
 
-libro_autor_association = Table(
-    'libro_autor_association',
-    Base.metadata,
-    Column('libro_id', Integer, ForeignKey('libro.id')),
-    Column('autor_id', Integer, ForeignKey('autor.id'))
+# Tabla intermedia
+
+
+libro = Table(
+    'libros', meta,
+    Column('id', Integer, primary_key=True, index=True),
+    Column('titulo', String(255)),
+    Column('fecha', Integer),
+    Column('genero', String(255)),
+    Column('paginas', Integer),
+    # Relacion con personas 1 Persona N Libros
+    Column('persona_id', Integer, ForeignKey('personas.id'))
 )
 
-class Libro(Base):
-    __tablename__ = 'libro'
 
-    id = Column(Integer, primary_key=True, index=True)
-    titulo = Column(String)
-    fecha = Column(Integer)
-    genero = Column(String)
-    paginas = Column(Integer)
-
-    autores = relationship('Autor', secondary=libro_autor_association, back_populates='libros')
+libro_autor_association = Table(
+    'libro_autor_association', meta,
+    Column('libro_id', Integer, ForeignKey('libros.id')),
+    Column('autor_id', Integer, ForeignKey('autores.id'))
+)
