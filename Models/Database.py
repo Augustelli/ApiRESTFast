@@ -8,7 +8,7 @@ class Database:
     _instance = None
     DATABASE_URL = "mysql+pymysql://root:Sup3rSecret0@localhost:3306/fastapi"
     engine = create_engine(DATABASE_URL)
-    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    SessionLocal = sessionmaker(bind=engine)
 
     def __new__(cls):
         if not cls._instance:

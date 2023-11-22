@@ -1,16 +1,20 @@
-from Services.BaseService import BaseService
+from pydantic import BaseModel
 
-class AutoresService(BaseService[Model]):
+from Models.Models import Autores
+from .BaseService import BaseService
+
+class AutoresService(BaseService):
+    def __init__(self):
+        super().__init__(Autores)
+
+class DomiciliosService(BaseService):
     pass
 
-class DomiciliosService(BaseService[Model]):
+class LibrosService(BaseService):
     pass
 
-class LibrosService(BaseService[Model]):
+class LocalidadesService(BaseService):
     pass
 
-class LocalidadesService(BaseService[Model]):
-    pass
-
-class PersonasService(BaseService[Model]):
+class PersonasService(BaseService):
     pass

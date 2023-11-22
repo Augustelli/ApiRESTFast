@@ -12,7 +12,6 @@ from Controllers.AutorController import route_autores
 db = Database()
 db.create_database()
 
-
 app = FastAPI()
 baseUrl = '/api/v1/apiRestFake/'
 app.include_router(router_localidades, prefix=f"{baseUrl}localidades", tags=['localidades'])

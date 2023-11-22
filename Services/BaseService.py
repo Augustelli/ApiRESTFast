@@ -1,20 +1,16 @@
 from typing import Generic, TypeVar, List
-
-from fastapi import Depends
 from sqlalchemy.ext.declarative import DeclarativeMeta
-from sqlalchemy.orm import Session
-
 from Models.Database import Database
 
 ModelType = TypeVar("ModelType", bound=DeclarativeMeta)
 
 db = Database()
+
 class BaseService(Generic[ModelType]):
 
-    def __init__(self, model: ModelType, db_session: Session = Depends(db)):
+    def __init__(self, model: ModelType):
         self.model = model
-        self.session = db_session
-
+        self.session = db.get_session()
 
     def find_all(self) -> List[ModelType]:
         return self.session.query(self.model).all()
@@ -33,6 +29,6 @@ class BaseService(Generic[ModelType]):
         self.session.refresh(instance)
         return instance
 
-    def delete(self,  instance: ModelType):
+    def delete(self, instance: ModelType):
         self.session.delete(instance)
         self.session.commit()
