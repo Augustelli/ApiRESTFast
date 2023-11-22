@@ -1,50 +1,24 @@
-from fastapi import FastAPI
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from Models.Libros import libro, libro_autor_association
-from Models.Personas import personas
-from Models.Domicilio import domicilio
-from Models.Localidad import localidad
-from Models.Autor import autores
+import uvicorn
 
-from Controllers.AutorController import autores_endpoint
+from Models.Database import Database
+from fastapi import FastAPI
+from Controllers.LocalidadController import router_localidades
+from Controllers.PersonaController import route_personas
+from Controllers.DomicilioController import route_domicilio
+from Controllers.LibrosController import route_libros
+from Controllers.AutorController import route_autores
+
+
+db = Database()
+db.create_database()
+
 
 app = FastAPI()
+baseUrl = '/api/v1/apiRestFake/'
+app.include_router(router_localidades, prefix=f"{baseUrl}localidades", tags=['localidades'])
+app.include_router(route_personas, prefix=f"{baseUrl}personas", tags=['personas'])
+app.include_router(route_domicilio, prefix=f"{baseUrl}domicilios", tags=['domicilios'])
+app.include_router(route_libros, prefix=f"{baseUrl}libros", tags=['libros'])
+app.include_router(route_autores, prefix=f"{baseUrl}autores", tags=['autores'])
 
-def create_databas():
-# USER:PASSWORD -> Meter en variable de entorno.
-    DATABASE_URL = "mysql+pymysql://root:Sup3rSecret0@localhost:3306/fastapi"
-    engine = create_engine(DATABASE_URL)
-    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-    session = SessionLocal()
-
-    try:
-        localidad.metadata.create_all(bind=engine, checkfirst=True)
-        libro.metadata.create_all(bind=engine, checkfirst=True)
-        libro_autor_association.metadata.create_all(bind=engine, checkfirst=True)
-        personas.metadata.create_all(bind=engine, checkfirst=True)
-        domicilio.metadata.create_all(bind=engine, checkfirst=True)
-        autores.metadata.create_all(bind=engine, checkfirst=True)
-        session.commit()
-
-        conn = engine.connect()
-
-        return conn
-
-    except Exception as e:
-        session.rollback()
-        print(f"Error al crear las tablas: {e}")
-
-    finally:
-        session.close()
-
-def create_api():
-    base_url = '/restFake/v1'
-    app = FastAPI()
-    app.include_router(autores_endpoint.router, prefix=f"{base_url}/autores", tags=['autores'])
-
-
-if __name__ == '__main__':
-    create_api()
-
+uvicorn.run(app, host="127.0.0.1", port=8000)
