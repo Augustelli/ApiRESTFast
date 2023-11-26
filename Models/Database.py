@@ -1,12 +1,13 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-
 from Models.Models import *
+from dotenv import load_dotenv
+import os
 
-
+load_dotenv()
 class Database:
     _instance = None
-    DATABASE_URL = "mysql+pymysql://root:Sup3rSecret0@localhost:3306/fastapi"
+    DATABASE_URL = f"postgresql+psycopg2://{os.environ.get('USER_DB', 'admin')}:{os.environ.get('USER_DB_PWD')}@{os.environ.get('DB_IP')}/{os.environ.get('DB_NAME')}"
     engine = create_engine(DATABASE_URL)
     SessionLocal = sessionmaker(bind=engine)
 
@@ -26,10 +27,12 @@ class Database:
         return self._conn
 
     def create_database(self):
+        print('entro de create_database')
         db = Database()
         try:
             Base.metadata.create_all(bind=self.engine, checkfirst=True)
             db.get_session().commit()
+            print('se creo la base de datos desde DATABASE')
 
         except Exception as e:
             db.get_session().rollback()
