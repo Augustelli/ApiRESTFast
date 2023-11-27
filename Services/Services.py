@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
-from Models.Models import Autores
-from .BaseService import BaseService
+from Models.Personas import Autores
+from .BaseServiceImp import BaseService
 
 class AutoresService(BaseService):
     def __init__(self):
