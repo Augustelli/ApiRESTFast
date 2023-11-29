@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 
-#from Models.Personas import Autores
 from .BaseServiceImp import BaseService
 
 class AutoresService(BaseService):

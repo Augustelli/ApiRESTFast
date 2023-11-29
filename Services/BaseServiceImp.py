@@ -9,8 +9,9 @@ db = Database()
 
 class BaseServiceImp(BaseService):
 
-    def __init__(self, model: ModelType):
+    def __init__(self, model: ModelType, schema ):
         self.model = model
+        self.schema = schema
         self.session = db.get_session()
 
     def find_all(self) -> List[ModelType]:
