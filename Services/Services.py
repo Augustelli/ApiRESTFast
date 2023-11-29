@@ -1,11 +1,11 @@
 from pydantic import BaseModel
 
-from Models.Personas import Autores
+#from Models.Personas import Autores
 from .BaseServiceImp import BaseService
 
 class AutoresService(BaseService):
     def __init__(self):
-        super().__init__(Autores)
+        super().__init__()
 
 class DomiciliosService(BaseService):
     pass

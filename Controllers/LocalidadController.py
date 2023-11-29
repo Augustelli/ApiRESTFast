@@ -1,7 +1,5 @@
-from fastapi import APIRouter
+from Controllers.BaseControllerImp import BaseControllerImp
 
-router_localidades = APIRouter()
-
-@router_localidades.get('/example')
-def example_endpoint():
-    return 'Endpoint de Localidad'
+class LocalidadesController(BaseControllerImp):
+    def __init__(self):
+        super().__init__('LocalidadesService')

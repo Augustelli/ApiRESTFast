@@ -1,7 +1,9 @@
 from fastapi import APIRouter
 
-route_domicilio = APIRouter()
+from Controllers.BaseControllerImp import BaseControllerImp
 
-@route_domicilio.get('/example')
-def example_endpoint():
-    return 'Endpoint de domicilio'
+
+class DomicilioController(BaseControllerImp):
+
+    def __init__(self):
+        super().__init__('DomicilioService')

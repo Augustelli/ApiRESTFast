@@ -1,7 +1,5 @@
-from fastapi import APIRouter
+from Controllers.BaseControllerImp import BaseControllerImp
 
-route_libros = APIRouter()
-
-@route_libros.get('/example')
-def example_endpoint():
-    return 'Endpoint de libros'
+class LibrosController(BaseControllerImp):
+    def __init__(self):
+        super().__init__('Libros')

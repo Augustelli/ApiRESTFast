@@ -1,7 +1,5 @@
-from fastapi import APIRouter
+from Controllers.BaseControllerImp import BaseControllerImp
 
-route_personas = APIRouter()
-
-@route_personas.get('/example')
-def example_endpoint():
-    return 'Endpoint de personas'
+class PersonasController(BaseControllerImp):
+    def __init__(self):
+        super().__init__('PersonasService')

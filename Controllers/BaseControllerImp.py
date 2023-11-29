@@ -1,52 +1,61 @@
 from fastapi import APIRouter, HTTPException
 
 from Controllers.BaseController import BaseController
-from Services.BaseServiceImp import BaseService
 
-from typing import Type, TypeVar
+from typing import TypeVar
 
 ModelType = TypeVar("ModelType")
-
-router = APIRouter()
 class BaseControllerImp(BaseController):
+
     def __init__(self, service):
         self.service = service
-        self.router = router
+        self.router = APIRouter()
+
+        @self.router.get("/all")
+        def get_all():
+            # items = self.service.find_all(skip=skip, limit=limit)
+            # return items
+            return 'HOLA'
+
+        @self.router.get("/{item_id}")
+        def get_by_id(item_id: int):
+            # item = self.service.find_by_id(item_id)
+            # if item is None:
+            #     raise HTTPException(status_code=404, detail="Item not found")
+            # return item
+            return 'ASJDHASO'
+
+        @self.router.post("/")
+        def create(item_data: dict):
+            return self.service.save(item_data)
 
 
-    @router.get("/all")
-    def get_all(self, skip: int = 0, limit: int = 10):
-        # items = self.service.find_all(skip=skip, limit=limit)
-        # return items
-        return 'HOLA'
+        @self.router.put("/{item_id}")
+        def update( item_id: int, updated_data: dict):
+            item = self.service.find_by_id(item_id)
+            if item is None:
+                raise HTTPException(status_code=404, detail="Item not found")
+            return self.service.update(item, updated_data)
 
-    @router.get("/{item_id}")
-    def get_by_id(self, item_id: int):
-        # item = self.service.find_by_id(item_id)
-        # if item is None:
-        #     raise HTTPException(status_code=404, detail="Item not found")
-        # return item
-        return 'ASJDHASO'
+        @self.router.delete("/{item_id}")
+        def delete(item_id: int):
+            item = self.service.find_by_id(item_id)
+            if item is None:
+                raise HTTPException(status_code=404, detail="Item not found")
+            self.service.delete(item)
 
-    @router.post("/")
-    def create(self, item_data: dict):
-        return self.service.save(item_data)
+    def get_all(self):
+        return self.service.find_all()
 
+    def get_by_id(self, item_id : int):
+        return self.service.find_by_id()
 
-    @router.put("/{item_id}")
-    def update(self, item_id: int, updated_data: dict):
-        item = self.service.find_by_id(item_id)
-        if item is None:
-            raise HTTPException(status_code=404, detail="Item not found")
-        return self.service.update(item, updated_data)
+    def create(self):
+        return self.service.save()
 
-    @router.delete("/{item_id}")
-    def delete(self, item_id: int):
-        item = self.service.find_by_id(item_id)
-        if item is None:
-            raise HTTPException(status_code=404, detail="Item not found")
-        self.service.delete(item)
-        
-    @property
-    def router(self):
-        return router
+    def update(self):
+        return self.service.update()
+
+    def delete(self, item_id : int):
+        return self.service.delete()
+
