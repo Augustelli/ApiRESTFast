@@ -1,8 +1,7 @@
-from pydantic import BaseModel
+from .BaseServiceImp import BaseService, BaseServiceImp
 
-from .BaseServiceImp import BaseService
 
-class AutoresService(BaseService):
+class AutoresService(BaseServiceImp):
     def __init__(self):
         super().__init__()
 

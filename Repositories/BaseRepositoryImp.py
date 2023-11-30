@@ -11,7 +11,7 @@ def _to_dict(instance: BaseModel) -> dict:
     return {key: value for key, value in instance.__dict__.items() if key in instance.__table__.columns}
 
 
-class InstanceNotFoundError:
+class InstanceNotFoundError(Exception):
     pass
 
 
@@ -24,7 +24,6 @@ class BaseRepositoryImpl(BaseRepository):
 
     @contextmanager
     def session_scope(self):
-        """Provide a transactional scope around a series of operations."""
         session = self.session
         try:
             yield session
