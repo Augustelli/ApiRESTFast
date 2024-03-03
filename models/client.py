@@ -8,7 +8,7 @@ class ClientModel(BaseModel):
     __tablename__ = "clients"
 
     name = Column(String, index=True)
-    lastname = Column(String, index=True)
+    lastname = Column(String, index=True)   
     email = Column(String)
     telephone = Column(String)
 

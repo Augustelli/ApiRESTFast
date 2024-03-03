@@ -5,20 +5,24 @@ services:
     image: fast_api_rest
     container_name: fast_api_rest
     environment:
-      POSTGRES_HOST: "postgres"
+      POSTGRES_HOST: postgres
       POSTGRES_PORT: "5432"
       POSTGRES_DB: "postgres"
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
+      DATABASE_URI: "postgresql://postgres:postgres@postgres/postgres"
+
     ports:
       - "8000:8000"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health_check"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/health_check" ]
       interval: 10s
       timeout: 10s
       retries: 5
     networks:
       - fast_api_rest_network
+    depends_on:
+      - postgres
 
   postgres:
     image: postgres:13
@@ -30,7 +34,7 @@ services:
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgres"]
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
       interval: 10s
       timeout: 10s
       retries: 5
