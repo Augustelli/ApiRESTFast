@@ -1,23 +1,66 @@
 import uvicorn
-
-from Models.Database import Database
 from fastapi import FastAPI
-from Controllers.LocalidadController import router_localidades
-from Controllers.PersonaController import route_personas
-from Controllers.DomicilioController import route_domicilio
-from Controllers.LibrosController import route_libros
-from Controllers.AutorController import route_autores
+from starlette import status
+from starlette.responses import JSONResponse
+
+from config.database import Database
+from controllers.address_controller import AddressController
+from controllers.bill_controller import BillController
+from controllers.category_controller import CategoryController
+from controllers.client_controller import ClientController
+from controllers.order_controller import OrderController
+from controllers.order_detail_controller import OrderDetailController
+from controllers.product_controller import ProductController
+from controllers.review_controller import ReviewController
+from repositories.base_repository_impl import InstanceNotFoundError
+from controllers.health_check import router as health_check_controller
 
 
-db = Database()
-db.create_database()
+def create_fastapi_app():
+    fastapi_app = FastAPI()
 
-app = FastAPI()
-baseUrl = '/api/v1/apiRestFake/'
-app.include_router(router_localidades, prefix=f"{baseUrl}localidades", tags=['localidades'])
-app.include_router(route_personas, prefix=f"{baseUrl}personas", tags=['personas'])
-app.include_router(route_domicilio, prefix=f"{baseUrl}domicilios", tags=['domicilios'])
-app.include_router(route_libros, prefix=f"{baseUrl}libros", tags=['libros'])
-app.include_router(route_autores, prefix=f"{baseUrl}autores", tags=['autores'])
+    @fastapi_app.exception_handler(InstanceNotFoundError)
+    async def instance_not_found_exception_handler(request, exc):
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={"message": str(exc)},
+        )
 
-uvicorn.run(app, host="127.0.0.1", port=8000)
+    client_controller = ClientController()
+    fastapi_app.include_router(client_controller.router, prefix="/clients")
+
+    order_controller = OrderController()
+    fastapi_app.include_router(order_controller.router, prefix="/orders")
+
+    product_controller = ProductController()
+    fastapi_app.include_router(product_controller.router, prefix="/products")
+
+    address_controller = AddressController()
+    fastapi_app.include_router(address_controller.router, prefix="/addresses")
+
+    bill_controller = BillController()
+    fastapi_app.include_router(bill_controller.router, prefix="/bills")
+
+    order_detail_controller = OrderDetailController()
+    fastapi_app.include_router(order_detail_controller.router, prefix="/order_details")
+
+    review_controller = ReviewController()
+    fastapi_app.include_router(review_controller.router, prefix="/reviews")
+
+    category_controller = CategoryController()
+    fastapi_app.include_router(category_controller.router, prefix="/categories")
+
+    fastapi_app.include_router(health_check_controller, prefix="/health_check")
+
+    return fastapi_app
+
+
+def run_app(fastapi_app: FastAPI):
+    uvicorn.run(fastapi_app, host="0.0.0.0", port=8000)
+
+
+if __name__ == "__main__":
+    db = Database()
+    db.create_tables()
+    app = create_fastapi_app()
+    run_app(app)
