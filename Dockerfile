@@ -1,15 +1,19 @@
-FROM python:3.11.6-alpine3.17
+FROM python:3.11.6-slim-bullseye AS builder
 
-WORKDIR /code
+WORKDIR /app
 
-COPY ./requirements.txt /code/requirements.txt
+COPY requirements.txt .
 
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+RUN pip install --no-cache-dir --user -r requirements.txt
 
+FROM python:3.11.6-slim-bullseye
 
-COPY ./app /code/app
+COPY --from=builder /root/.local /root/.local
 
+ENV PATH=/root/.local/bin:$PATH
 
-CMD ["uvicorn", "app.main:app", "--host", "192.168.0.1", "--port", "8080"]
+WORKDIR /app
 
-#docker run -d --name mycontainer -p 80:80 myimage
+COPY . .
+
+CMD ["python", "-m", "main"]
